@@ -11,80 +11,112 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.material3.adaptive.navigationsuite.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.prslc.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
-            MyApplicationTheme {
-                MyApplicationApp()
+            MaterialTheme {
+                App()
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MyApplicationApp() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-    var isLoading by remember { mutableStateOf(false) }
+private fun App() {
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach { destination ->
-                item(
-                    icon = { Icon(destination.icon, contentDescription = null) },
-                    label = { Text(destination.label) },
-                    selected = destination == currentDestination,
-                    onClick = { currentDestination = destination }
-                )
-            }
-        }
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    onClick = { isLoading = !isLoading },
-                    icon = { Icon(Icons.Default.Add, contentDescription = "Add") },
-                    text = { Text(text = if (isLoading) "Stop Loading" else "Fetch Data") }
-                )
-            }
-        ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isLoading) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        LoadingIndicator() 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("Loading...")
-                    }
-                } else {
-                    Text(
-                        text = "Viewing: ${currentDestination.label}",
-                        style = MaterialTheme.typography.headlineMedium
+    var currentDestination by rememberSaveable {
+        mutableStateOf(Destination.HOME)
+    }
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+
+        topBar = {
+            TopAppBar(
+                title = { Text(currentDestination.label) }
+            )
+        },
+
+        bottomBar = {
+            NavigationBar {
+                Destination.entries.forEach { destination ->
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                destination.icon,
+                                contentDescription = destination.label
+                            )
+                        },
+                        label = { Text(destination.label) },
+                        selected = destination == currentDestination,
+                        onClick = { currentDestination = destination }
                     )
                 }
             }
+        },
+
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { isLoading = !isLoading },
+                icon = {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(
+                        if (isLoading) "Stop Loading" else "Fetch Data"
+                    )
+                }
+            )
+        }
+    ) { innerPadding ->
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isLoading) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Loading...")
+                }
+            } else {
+                Text(
+                    text = when (currentDestination) {
+                        Destination.HOME -> "Welcome Home"
+                        Destination.FAVORITES -> "Your Favorites"
+                        Destination.PROFILE -> "User Profile"
+                    },
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
         }
     }
 }
 
-enum class AppDestinations(val label: String, val icon: ImageVector) {
+private enum class Destination(
+    val label: String,
+    val icon: ImageVector
+) {
     HOME("Home", Icons.Default.Home),
     FAVORITES("Favorites", Icons.Default.Favorite),
     PROFILE("Profile", Icons.Default.Person),
