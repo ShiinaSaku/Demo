@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.navigationsuite.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.prslc.myapplication.ui.theme.MyApplicationTheme
-import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,13 +33,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterial3ExpressiveApi
 @Composable
 fun MyApplicationApp() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-    // State to toggle the Loading Indicator
     var isLoading by remember { mutableStateOf(false) }
 
-    // NavigationSuiteScaffold automatically handles BottomBar vs Navigation Rail
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             AppDestinations.entries.forEach { destination ->
@@ -55,7 +54,6 @@ fun MyApplicationApp() {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
-                // Using the Extended FAB you requested
                 ExtendedFloatingActionButton(
                     onClick = { isLoading = !isLoading },
                     icon = { Icon(Icons.Default.Add, contentDescription = "Add") },
@@ -70,29 +68,19 @@ fun MyApplicationApp() {
                 contentAlignment = Alignment.Center
             ) {
                 if (isLoading) {
-                    // Modern M3 Loading Indicator
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         LoadingIndicator() 
-                        Text("Updating ${currentDestination.label}...", style = MaterialTheme.typography.bodyMedium)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text("Loading...")
                     }
                 } else {
-                    MainContent(currentDestination)
+                    Text(
+                        text = "Viewing: ${currentDestination.label}",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun MainContent(destination: AppDestinations) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = "Welcome to ${destination.label} Screen",
-            style = MaterialTheme.typography.headlineMedium
-        )
     }
 }
 
