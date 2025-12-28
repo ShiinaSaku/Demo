@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalMaterial3ExpressiveApi
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MyApplicationApp() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
