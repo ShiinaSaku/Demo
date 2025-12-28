@@ -37,8 +37,9 @@ android {
         compose = true
     }
 }
-kotlin
+kotlin{
     jvmToolchain(25)
+}
 
 dependencies {
     implementation(libs.androidx.core.ktx)
