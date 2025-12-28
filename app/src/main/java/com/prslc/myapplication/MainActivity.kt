@@ -46,7 +46,7 @@ private fun App() {
         modifier = Modifier.fillMaxSize(),
 
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text(currentDestination.label) }
             )
         },
@@ -56,10 +56,7 @@ private fun App() {
                 Destination.entries.forEach { destination ->
                     NavigationBarItem(
                         icon = {
-                            Icon(
-                                destination.icon,
-                                contentDescription = destination.label
-                            )
+                            Icon(destination.icon, contentDescription = destination.label)
                         },
                         label = { Text(destination.label) },
                         selected = destination == currentDestination,
@@ -72,25 +69,18 @@ private fun App() {
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { isLoading = !isLoading },
-                icon = {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = null
-                    )
-                },
+                icon = { Icon(Icons.Default.Add, contentDescription = null) },
                 text = {
-                    Text(
-                        if (isLoading) "Stop Loading" else "Fetch Data"
-                    )
+                    Text(if (isLoading) "Stop Loading" else "Fetch Data")
                 }
             )
         }
-    ) { innerPadding ->
+    ) { padding ->
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(padding),
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {
