@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.adaptive.navigationsuite.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MyApplicationApp() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
@@ -40,7 +41,7 @@ fun MyApplicationApp() {
         navigationSuiteItems = {
             AppDestinations.entries.forEach { destination ->
                 item(
-                    icon = { Icon(destination.icon, contentDescription = destination.label) },
+                    icon = { Icon(destination.icon, contentDescription = null) },
                     label = { Text(destination.label) },
                     selected = destination == currentDestination,
                     onClick = { currentDestination = destination }
@@ -51,11 +52,11 @@ fun MyApplicationApp() {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
-                // Your requested Extended FAB
+                // Extended FAB as requested
                 ExtendedFloatingActionButton(
                     onClick = { isLoading = !isLoading },
                     icon = { Icon(Icons.Default.Refresh, contentDescription = null) },
-                    text = { Text(text = if (isLoading) "Stop Loading" else "Fetch Data") }
+                    text = { Text(text = if (isLoading) "Toggle Loading" else "Show Loader") }
                 )
             }
         ) { innerPadding ->
@@ -69,12 +70,12 @@ fun MyApplicationApp() {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         LoadingIndicator() 
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text("Processing...", style = MaterialTheme.typography.labelLarge)
+                        Text("Loading ${currentDestination.label}...")
                     }
                 } else {
                     Text(
-                        text = "Screen: ${currentDestination.label}",
-                        style = MaterialTheme.typography.headlineLarge
+                        text = "Viewing: ${currentDestination.label}",
+                        style = MaterialTheme.typography.headlineMedium
                     )
                 }
             }
@@ -85,5 +86,5 @@ fun MyApplicationApp() {
 enum class AppDestinations(val label: String, val icon: ImageVector) {
     HOME("Home", Icons.Default.Home),
     FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountCircle),
+    PROFILE("Profile", Icons.Default.Person),
 }
