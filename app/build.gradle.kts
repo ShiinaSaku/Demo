@@ -48,6 +48,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0") 
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation("androidx.compose.material3:material3:1.5.0-alpha11")
     implementation("androidx.compose.material3:material3-window-size-class:1.5.0-alpha11")
