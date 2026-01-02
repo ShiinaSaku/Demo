@@ -1,4 +1,4 @@
-package com.production.otasystem
+package com.prslc.myapplication
 
 import android.app.Application
 import android.content.Intent
